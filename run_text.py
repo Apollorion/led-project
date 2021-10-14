@@ -44,9 +44,8 @@ def run(text):
         offscreen_canvas = matrix.SwapOnVSync(offscreen_canvas)
 
 try:
-    # Start loop
-    print("Press CTRL-C to stop sample")
-    run("hello, world")
+    print("Press CTRL-C to stop")
+    run(sys.argv[1])
 except KeyboardInterrupt:
     print("Exiting\n")
     sys.exit(0)
