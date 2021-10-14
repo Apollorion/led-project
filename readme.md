@@ -1,0 +1,1 @@
+Personal project of mine, only possible thanks to: https://github.com/hzeller/rpi-rgb-led-matrix
