@@ -87,8 +87,7 @@ def try_nasa(max_tweets=2):
     user = api.get_user(screen_name='NASA')
     tweets = api.user_timeline(user_id=user.id_str, count=max_tweets, include_rts=False, tweet_mode='extended', exclude_replies=True)
     for mention in reversed(tweets):
-        my_text = process_tweet(mention, check_profanity=False)
-        display_text(my_text)
+        process_tweet(mention, check_profanity=False)
 
 def process_tweet(mention, check_profanity=True, seconds=60):
     # Print the Tweet onto the sign
