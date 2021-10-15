@@ -15,6 +15,7 @@ DEFAULT_TEXT = "See your tweet here, @Apollorion on twitter!"
 TWEET_ID_FILE = "/home/pi/tweet_ID.txt"
 TRY_NASA_AFTER_X_CACHED_TWEETS = 2
 DISPLAY_MY_TWEETS_FOR_X_SECONDS = 600
+TWITTER_ACCOUNTS_TO_MONITOR = ["NASA", "NASAHubble", "Space_Station", "NASAhistory", "esa"]
 
 current_dir = str(pathlib.Path(__file__).parent.resolve())
 
@@ -84,19 +85,21 @@ def run():
 
 def try_nasa(max_tweets=2):
     print("trying nasa")
-    user = api.get_user(screen_name='NASA')
+
+    screen_name = TWITTER_ACCOUNTS_TO_MONITOR[random.randint(0,len(TWITTER_ACCOUNTS_TO_MONITOR - 1))]
+    user = api.get_user(screen_name=screen_name)
     tweets = api.user_timeline(user_id=user.id_str, count=max_tweets, include_rts=False, tweet_mode='extended', exclude_replies=True)
     for mention in reversed(tweets):
-        process_tweet(mention, check_profanity=False)
+        process_tweet(mention, check_profanity=False, screen_name=f"@{screen_name}: ")
 
-def process_tweet(mention, check_profanity=True, seconds=60):
+def process_tweet(mention, check_profanity=True, seconds=60, screen_name=""):
     # Print the Tweet onto the sign
     # IDK Why but some tweets come in as "full_text" and some come in as "text" so we will just check for both
     if hasattr(mention, 'text'):
-        my_text = mention.text.replace("\n", "  ")
+        my_text = screen_name + mention.text.replace("\n", "  ")
         my_text = display_text(my_text, check_profanity=check_profanity, seconds=seconds)
     elif hasattr(mention, 'full_text'):
-        my_text = mention.full_text.replace("\n", "  ")
+        my_text = screen_name + mention.full_text.replace("\n", "  ")
         my_text = display_text(my_text, check_profanity=check_profanity, seconds=seconds)
         
     else:
