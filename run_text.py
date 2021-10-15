@@ -8,8 +8,11 @@ from rgbmatrix import graphics
 import tweepy
 import os
 import random
+import pathlib
 
 DEFAULT_TEXT = "This is my LED Sign, I love it."
+
+current_dir = pathlib.Path(__file__).parent.resolve()
 
 # Authenticate to Twitter
 auth = tweepy.OAuthHandler(os.environ["CONSUMER_KEY"], os.environ["CONSUMER_SECRET"])
@@ -74,7 +77,7 @@ def run():
 def display_text(my_text, seconds=60):
     offscreen_canvas = matrix.CreateFrameCanvas()
     font = graphics.Font()
-    font.LoadFont("fonts/7x13B.bdf")
+    font.LoadFont(current_dir + "fonts/7x13B.bdf")
     textColor = graphics.Color(random.randint(0,255), random.randint(0,255), random.randint(0,255))
     pos = offscreen_canvas.width
 
