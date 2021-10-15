@@ -41,7 +41,13 @@ def run():
 
         print("Retreiving Mentions")
         last_id = get_last_tweet()
-        mentions = api.mentions_timeline(last_id, tweet_mode='extended')
+        req = {}
+        if last_id != 0:
+            req = {
+                "since_id": last_id,
+                "tweet_mode": "extended"
+            }
+        mentions = api.mentions_timeline(**req)
 
         if len(mentions) > 0:
             for mention in reversed(mentions):
