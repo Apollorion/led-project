@@ -13,7 +13,7 @@ import requests
 
 DEFAULT_TEXT = "See your tweet here, @Apollorion on twitter!"
 TWEET_ID_FILE = "/home/pi/tweet_ID.txt"
-TRY_NASA_AFTER_X_CACHED_TWEETS = 10
+TRY_NASA_AFTER_X_CACHED_TWEETS = 2
 
 current_dir = str(pathlib.Path(__file__).parent.resolve())
 
