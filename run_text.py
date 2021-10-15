@@ -10,7 +10,7 @@ import os
 import random
 import pathlib
 
-DEFAULT_TEXT = "This is my LED Sign, I love it."
+DEFAULT_TEXT = "See your tweet here, @Apollorion on twitter!"
 TWEET_ID_FILE = "/home/pi/tweet_ID.txt"
 
 current_dir = str(pathlib.Path(__file__).parent.resolve())
@@ -30,7 +30,7 @@ options.parallel = 1
 options.row_address_type = 0
 options.multiplexing = 4
 options.pwm_bits = 11
-options.brightness = 50
+options.brightness = 30
 options.pwm_lsb_nanoseconds = 130
 options.led_rgb_sequence = "RGB"
 options.pixel_mapper_config = ""
@@ -88,12 +88,16 @@ def display_text(my_text, seconds=60):
 
 
     run_seconds = 0
-    while run_seconds < seconds:
+    is_off_screen = False
+    while not is_off_screen:
         offscreen_canvas.Clear()
         length = graphics.DrawText(offscreen_canvas, font, pos, 12, textColor, my_text)
         pos -= 1
         if (pos + length < 0):
             pos = offscreen_canvas.width
+
+            if run_seconds > seconds:
+                is_off_screen = True
 
         time.sleep(0.05)
         run_seconds += 0.05
