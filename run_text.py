@@ -77,7 +77,7 @@ def run():
             none_count += 1
 
             if none_count < TRY_NASA_AFTER_X_CACHED_TWEETS:
-                display_text(my_text)
+                display_text(my_text, check_profanity=False)
             else:
                 none_count = 0
                 try_nasa()
