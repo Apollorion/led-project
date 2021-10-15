@@ -82,11 +82,13 @@ def run():
                 try_nasa()
 
 def try_nasa(max_tweets=2):
+    print("trying nasa")
     user = api.get_user(screen_name='NASA')
     tweets = api.user_timeline(user_id=user.id_str, count=20, include_rts=False, tweet_mode='extended')
     count = 0
     for mention in reversed(tweets):
-        process_tweet(mention, check_profanity=False)
+        my_text = process_tweet(mention, check_profanity=False)
+        display_text(my_text)
         count +=1
         if count == max_tweets:
             break
@@ -95,17 +97,19 @@ def process_tweet(mention, check_profanity=True):
     # Print the Tweet onto the sign
     # IDK Why but some tweets come in as "full_text" and some come in as "text" so we will just check for both
     if hasattr(mention, 'text'):
-        my_text = mention.text
+        my_text = mention.text.replace("\n", "  ")
         if check_profanity and not contains_profanity(my_text):
             display_text(my_text)
         else:
-            my_text = DEFAULT_TEXT
+            if check_profanity:
+                my_text = DEFAULT_TEXT
     elif hasattr(mention, 'full_text'):
-        my_text = mention.full_text
+        my_text = mention.full_text.replace("\n", "  ")
         if check_profanity and not contains_profanity(my_text):
             display_text(my_text)
         else:
-            my_text = DEFAULT_TEXT
+            if check_profanity:
+                my_text = DEFAULT_TEXT
     else:
         print("Mention has no text attribute")
         print(mention)
