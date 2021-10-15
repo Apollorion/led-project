@@ -99,7 +99,7 @@ def display_text(my_text, seconds=60):
         offscreen_canvas = matrix.SwapOnVSync(offscreen_canvas)
 
 def get_last_tweet():
-    mode = 'a' if os.path.exists("tweet_ID.txt") else 'w'
+    mode = 'a' if os.path.exists("/home/pi/tweet_ID.txt") else 'w'
     f = open("tweet_ID.txt", mode)
     if mode != 'w':
         lastId = int(f.read().strip())
@@ -110,7 +110,7 @@ def get_last_tweet():
         return 0
 
 def put_last_tweet(Id):
-    f = open("tweet_ID.txt", 'w')
+    f = open("/home/pi/tweet_ID.txt", 'w')
     f.write(str(Id))
     f.close()
     return
