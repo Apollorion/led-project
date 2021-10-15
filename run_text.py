@@ -57,9 +57,13 @@ def run():
                 new_id = mention.id
                 put_last_tweet(new_id)
 
-                # Print the Tweet onto the sign
-                my_text = mention.text.replace("@Apollorion ", "", 1)
-                display_text(my_text)
+                if hasattr(mention, 'text'):
+                    # Print the Tweet onto the sign
+                    my_text = mention.text.replace("@Apollorion ", "", 1)
+                    display_text(my_text)
+                else:
+                    print("Mention has no text attribute")
+                    print(mention)
                 print("Ending Mention")
         else:
             print("Nothing new, starting from cache")
