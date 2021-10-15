@@ -9,6 +9,7 @@ import tweepy
 import os
 import random
 import pathlib
+import requests
 
 DEFAULT_TEXT = "See your tweet here, @Apollorion on twitter!"
 TWEET_ID_FILE = "/home/pi/tweet_ID.txt"
@@ -65,17 +66,23 @@ def run():
                 # IDK Why but some tweets come in as "full_text" and some come in as "text" so we will just check for both
                 if hasattr(mention, 'text'):
                     my_text = mention.text.replace("@Apollorion ", "", 1)
-                    display_text(my_text)
+                    if not contains_profanity(my_text):
+                        display_text(my_text)
+                    else:
+                        my_text = DEFAULT_TEXT
                 elif hasattr(mention, 'full_text'):
                     my_text = mention.full_text.replace("@Apollorion ", "", 1)
-                    display_text(my_text)
+                    if not contains_profanity(my_text):
+                        display_text(my_text)
+                    else:
+                        my_text = DEFAULT_TEXT
                 else:
                     print("Mention has no text attribute")
                     print(mention)
                 print("Ending Mention")
         else:
-            print("Nothing new, starting from cache")
             #Display either the last tweet or the default text
+            print("Nothing new, starting from cache")
             display_text(my_text)
 
 
@@ -117,6 +124,26 @@ def put_last_tweet(Id):
     f.write(str(Id))
     f.close()
     return
+
+def contains_profanity(text):
+    url = "https://api.promptapi.com/bad_words"
+
+    payload = text.encode("utf-8")
+    headers= {
+        "apikey": os.environ["BAD_WORDS_API_KEY"]
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+    result = response.json()
+    if hasattr(result, "bad_words_total") and result.bad_words_total > 0:
+        print("Text Has Bad Words")
+        return True
+    elif not hasattr(result, "bad_words_total"):
+        print("Cannot determine if text has bad words, maybe an API issue")
+        return True
+    else:
+        return False
+    
 
 try:
     print("Press CTRL-C to stop")
