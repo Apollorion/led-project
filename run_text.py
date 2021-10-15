@@ -41,18 +41,21 @@ def run():
 
 
     while True:
-
+        print("Retreiving Mentions")
         mentions = api.mentions_timeline()
         if len(mentions) == 0:
             return
 
         for mention in reversed(mentions):
+            print("Starting new mention")
+
             new_id = mention.id
-            my_text = mention.text
+            my_text = mention.text.replace("@Apollorion ", "", 1)
 
             # Print the Tweet onto the sign
             run_seconds = 0
-            while run_seconds < 10 :
+            while run_seconds < 10:
+                print("Displaying mention for 10 seconds")
                 offscreen_canvas.Clear()
                 length = graphics.DrawText(offscreen_canvas, font, pos, 12, textColor, my_text)
                 pos -= 1
@@ -62,6 +65,7 @@ def run():
                 time.sleep(0.05)
                 run_seconds += 0.05
                 offscreen_canvas = matrix.SwapOnVSync(offscreen_canvas)
+            print("Ending Mention")
 
 try:
     print("Press CTRL-C to stop")
