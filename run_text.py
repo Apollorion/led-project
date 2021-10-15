@@ -82,11 +82,11 @@ def run():
                 try_nasa()
 
 def try_nasa(max_tweets=2):
-    user = api.get_user('NASA')
+    user = api.get_user(screen_name='NASA')
     tweets = api.user_timeline(user_id=user.id_str, count=20, include_rts=False, tweet_mode='extended')
     count = 0
     for mention in reversed(tweets):
-        process_tweet(mention)
+        process_tweet(mention, check_profanity=False)
         count +=1
         if count == max_tweets:
             break
