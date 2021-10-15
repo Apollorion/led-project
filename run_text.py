@@ -81,7 +81,7 @@ def run():
 def display_text(my_text, seconds=60):
     offscreen_canvas = matrix.CreateFrameCanvas()
     font = graphics.Font()
-    font.LoadFont(current_dir + "fonts/7x13B.bdf")
+    font.LoadFont(current_dir + "/fonts/7x13B.bdf")
     textColor = graphics.Color(random.randint(0,255), random.randint(0,255), random.randint(0,255))
     pos = offscreen_canvas.width
 
