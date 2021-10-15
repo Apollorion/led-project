@@ -135,10 +135,10 @@ def contains_profanity(text):
 
     response = requests.request("POST", url, headers=headers, data=payload)
     result = response.json()
-    if hasattr(result, "bad_words_total") and result.bad_words_total > 0:
+    if "bad_words_total" in result and result["bad_words_total"] > 0:
         print("Text Has Bad Words")
         return True
-    elif not hasattr(result, "bad_words_total"):
+    elif "bad_words_total" not in result:
         print("Cannot determine if text has bad words, maybe an API issue")
         return True
     else:
