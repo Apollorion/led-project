@@ -65,7 +65,7 @@ def run():
 
 try:
     print("Press CTRL-C to stop")
-    run(sys.argv[1])
+    run()
 except KeyboardInterrupt:
     print("Exiting\n")
     sys.exit(0)
