@@ -14,6 +14,7 @@ import requests
 DEFAULT_TEXT = "See your tweet here, @Apollorion on twitter!"
 TWEET_ID_FILE = "/home/pi/tweet_ID.txt"
 TRY_NASA_AFTER_X_CACHED_TWEETS = 2
+DISPLAY_MY_TWEETS_FOR_X_SECONDS = 600
 
 current_dir = str(pathlib.Path(__file__).parent.resolve())
 
@@ -65,7 +66,7 @@ def run():
 
                 # note and store last tweet
                 new_id = mention.id
-                put_last_tweet(new_id)
+                put_last_tweet(new_id, seconds=DISPLAY_MY_TWEETS_FOR_X_SECONDS)
 
                 # Print the Tweet onto the sign
                 my_text = process_tweet(mention)
@@ -89,33 +90,29 @@ def try_nasa(max_tweets=2):
         my_text = process_tweet(mention, check_profanity=False)
         display_text(my_text)
 
-def process_tweet(mention, check_profanity=True):
+def process_tweet(mention, check_profanity=True, seconds=60):
     # Print the Tweet onto the sign
     # IDK Why but some tweets come in as "full_text" and some come in as "text" so we will just check for both
     if hasattr(mention, 'text'):
         my_text = mention.text.replace("\n", "  ")
-        if check_profanity and not contains_profanity(my_text):
-            display_text(my_text)
-        else:
-            if check_profanity:
-                my_text = DEFAULT_TEXT
+        my_text = display_text(my_text, check_profanity=check_profanity, seconds=seconds)
     elif hasattr(mention, 'full_text'):
         my_text = mention.full_text.replace("\n", "  ")
-        if check_profanity and not contains_profanity(my_text):
-            display_text(my_text)
-        else:
-            if check_profanity:
-                my_text = DEFAULT_TEXT
+        my_text = display_text(my_text, check_profanity=check_profanity, seconds=seconds)
+        
     else:
         print("Mention has no text attribute")
         print(mention)
-
         my_text = DEFAULT_TEXT
 
     return my_text
 
 
-def display_text(my_text, seconds=60):
+def display_text(my_text, seconds=60, check_profanity=True):
+
+    if check_profanity and contains_profanity(my_text):
+        return DEFAULT_TEXT
+
     offscreen_canvas = matrix.CreateFrameCanvas()
     font = graphics.Font()
     font.LoadFont(current_dir + "/fonts/7x13B.bdf")
@@ -138,6 +135,8 @@ def display_text(my_text, seconds=60):
         time.sleep(0.05)
         run_seconds += 0.05
         offscreen_canvas = matrix.SwapOnVSync(offscreen_canvas)
+
+    return my_text
 
 def get_last_tweet():
     if os.path.exists(TWEET_ID_FILE):
