@@ -69,7 +69,7 @@ def run():
                 put_last_tweet(new_id)
 
                 # Print the Tweet onto the sign
-                my_text = process_tweet(mentions, seconds=DISPLAY_MY_TWEETS_FOR_X_SECONDS))
+                my_text = process_tweet(mentions, seconds=DISPLAY_MY_TWEETS_FOR_X_SECONDS)
                 print("Ending Mention")
         else:
             #Display either the last tweet or the default text
