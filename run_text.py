@@ -11,6 +11,7 @@ import random
 import pathlib
 
 DEFAULT_TEXT = "This is my LED Sign, I love it."
+TWEET_ID_FILE = "/home/pi/tweet_ID.txt"
 
 current_dir = str(pathlib.Path(__file__).parent.resolve())
 
@@ -29,7 +30,7 @@ options.parallel = 1
 options.row_address_type = 0
 options.multiplexing = 4
 options.pwm_bits = 11
-options.brightness = 10
+options.brightness = 50
 options.pwm_lsb_nanoseconds = 130
 options.led_rgb_sequence = "RGB"
 options.pixel_mapper_config = ""
@@ -99,8 +100,8 @@ def display_text(my_text, seconds=60):
         offscreen_canvas = matrix.SwapOnVSync(offscreen_canvas)
 
 def get_last_tweet():
-    if os.path.exists("/home/pi/tweet_ID.txt"):
-        f = open("tweet_ID.txt", "r")
+    if os.path.exists(TWEET_ID_FILE):
+        f = open(TWEET_ID_FILE, "r")
         lastId = int(f.read().strip())
         f.close()
         return lastId
@@ -108,7 +109,7 @@ def get_last_tweet():
         return 0
 
 def put_last_tweet(Id):
-    f = open("/home/pi/tweet_ID.txt", 'w')
+    f = open(TWEET_ID_FILE, 'w')
     f.write(str(Id))
     f.close()
     return
