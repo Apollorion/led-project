@@ -73,7 +73,7 @@ def run():
                     screen_name = mention.user.screen_name
 
                 # Print the Tweet onto the sign
-                my_text = process_tweet(mention, seconds=DISPLAY_MY_TWEETS_FOR_X_SECONDS, screen_name=screen_name)
+                my_text = process_tweet(mention, seconds=DISPLAY_MY_TWEETS_FOR_X_SECONDS, screen_name=f"@{screen_name}: ")
                 print("Ending Mention")
         else:
             #Display either the last tweet or the default text
