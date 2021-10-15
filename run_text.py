@@ -12,7 +12,7 @@ import pathlib
 
 DEFAULT_TEXT = "This is my LED Sign, I love it."
 
-current_dir = pathlib.Path(__file__).parent.resolve()
+current_dir = str(pathlib.Path(__file__).parent.resolve())
 
 # Authenticate to Twitter
 auth = tweepy.OAuthHandler(os.environ["CONSUMER_KEY"], os.environ["CONSUMER_SECRET"])
@@ -60,9 +60,13 @@ def run():
                 new_id = mention.id
                 put_last_tweet(new_id)
 
+                # Print the Tweet onto the sign
+                # IDK Why but some tweets come in as "full_text" and some come in as "text" so we will just check for both
                 if hasattr(mention, 'text'):
-                    # Print the Tweet onto the sign
                     my_text = mention.text.replace("@Apollorion ", "", 1)
+                    display_text(my_text)
+                elif hasattr(mention, 'full_text'):
+                    my_text = mention.full_text.replace("@Apollorion ", "", 1)
                     display_text(my_text)
                 else:
                     print("Mention has no text attribute")
