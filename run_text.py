@@ -54,9 +54,9 @@ def run():
             run_seconds = 0
             while run_seconds < 10 :
                 offscreen_canvas.Clear()
-                len = graphics.DrawText(offscreen_canvas, font, pos, 12, textColor, my_text)
+                length = graphics.DrawText(offscreen_canvas, font, pos, 12, textColor, my_text)
                 pos -= 1
-                if (pos + len < 0):
+                if (pos + length < 0):
                     pos = offscreen_canvas.width
 
                 time.sleep(0.05)
