@@ -5,9 +5,16 @@ import sys
 import os
 from rgbmatrix import RGBMatrix, RGBMatrixOptions
 from rgbmatrix import graphics
+import tweepy
+import os
 
+# Authenticate to Twitter
+auth = tweepy.OAuthHandler(os.environ["CONSUMER_KEY"], os.environ["CONSUMER_SECRET"])
+auth.set_access_token(os.environ["ACCESS_TOKEN"], os.environ["ACCESS_SECRET"])
+api = tweepy.API(auth)
+
+# LED Sign options
 options = RGBMatrixOptions()
-
 options.hardware_mapping = "adafruit-hat"
 options.rows = 16
 options.cols = 32
@@ -25,23 +32,36 @@ options.drop_privileges=False
 
 matrix = RGBMatrix(options = options)
 
-def run(text):
+def run():
     offscreen_canvas = matrix.CreateFrameCanvas()
     font = graphics.Font()
     font.LoadFont("fonts/7x13B.bdf")
     textColor = graphics.Color(255, 0, 0)
     pos = offscreen_canvas.width
-    my_text = text
+
 
     while True:
-        offscreen_canvas.Clear()
-        len = graphics.DrawText(offscreen_canvas, font, pos, 12, textColor, my_text)
-        pos -= 1
-        if (pos + len < 0):
-            pos = offscreen_canvas.width
 
-        time.sleep(0.05)
-        offscreen_canvas = matrix.SwapOnVSync(offscreen_canvas)
+        mentions = api.mentions_timeline()
+        if len(mentions) == 0:
+            return
+
+        for mention in reversed(mentions):
+            new_id = mention.id
+            my_text = mention.text
+
+            # Print the Tweet onto the sign
+            run_seconds = 0
+            while run_seconds < 10 :
+                offscreen_canvas.Clear()
+                len = graphics.DrawText(offscreen_canvas, font, pos, 12, textColor, my_text)
+                pos -= 1
+                if (pos + len < 0):
+                    pos = offscreen_canvas.width
+
+                time.sleep(0.05)
+                run_seconds += 0.05
+                offscreen_canvas = matrix.SwapOnVSync(offscreen_canvas)
 
 try:
     print("Press CTRL-C to stop")
