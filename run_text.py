@@ -110,6 +110,8 @@ def process_tweet(mention, check_profanity=True):
         print("Mention has no text attribute")
         print(mention)
 
+        my_text = DEFAULT_TEXT
+
     return my_text
 
 
