@@ -13,6 +13,7 @@ import requests
 
 DEFAULT_TEXT = "See your tweet here, @Apollorion on twitter!"
 TWEET_ID_FILE = "/home/pi/tweet_ID.txt"
+TRY_NASA_AFTER_X_CACHED_TWEETS = 10
 
 current_dir = str(pathlib.Path(__file__).parent.resolve())
 
@@ -42,6 +43,7 @@ matrix = RGBMatrix(options = options)
 
 def run():
     my_text = DEFAULT_TEXT
+    none_count = 0
     while True:
 
         print("Retreiving Mentions")
@@ -50,11 +52,14 @@ def run():
         if last_id != 0:
             req = {
                 "since_id": last_id,
-                "tweet_mode": "extended"
+                "tweet_mode": "extended",
+                "include_entities": False,
+                "trim_user": True
             }
         mentions = api.mentions_timeline(**req)
 
         if len(mentions) > 0:
+            none_count = 0
             for mention in reversed(mentions):
                 print("Starting new mention")
 
@@ -63,27 +68,49 @@ def run():
                 put_last_tweet(new_id)
 
                 # Print the Tweet onto the sign
-                # IDK Why but some tweets come in as "full_text" and some come in as "text" so we will just check for both
-                if hasattr(mention, 'text'):
-                    my_text = mention.text.replace("@Apollorion", "", 1).replace("@apollorion", "", 1)
-                    if not contains_profanity(my_text):
-                        display_text(my_text)
-                    else:
-                        my_text = DEFAULT_TEXT
-                elif hasattr(mention, 'full_text'):
-                    my_text = mention.full_text.replace("@Apollorion", "", 1).replace("@apollorion", "", 1)
-                    if not contains_profanity(my_text):
-                        display_text(my_text)
-                    else:
-                        my_text = DEFAULT_TEXT
-                else:
-                    print("Mention has no text attribute")
-                    print(mention)
+                my_text = process_tweet(mention)
                 print("Ending Mention")
         else:
             #Display either the last tweet or the default text
             print("Nothing new, starting from cache")
+            none_count += 1
+
+            if none_count < TRY_NASA_AFTER_X_CACHED_TWEETS:
+                display_text(my_text)
+            else:
+                none_count = 0
+                try_nasa()
+
+def try_nasa(max_tweets=2):
+    user = api.get_user('NASA')
+    tweets = api.user_timeline(user_id=user.id_str, count=20, include_rts=False, tweet_mode='extended')
+    count = 0
+    for mention in reversed(tweets):
+        process_tweet(mention)
+        count +=1
+        if count == max_tweets:
+            break
+
+def process_tweet(mention, check_profanity=True):
+    # Print the Tweet onto the sign
+    # IDK Why but some tweets come in as "full_text" and some come in as "text" so we will just check for both
+    if hasattr(mention, 'text'):
+        my_text = mention.text
+        if check_profanity and not contains_profanity(my_text):
             display_text(my_text)
+        else:
+            my_text = DEFAULT_TEXT
+    elif hasattr(mention, 'full_text'):
+        my_text = mention.full_text
+        if check_profanity and not contains_profanity(my_text):
+            display_text(my_text)
+        else:
+            my_text = DEFAULT_TEXT
+    else:
+        print("Mention has no text attribute")
+        print(mention)
+
+    return my_text
 
 
 def display_text(my_text, seconds=60):
