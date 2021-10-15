@@ -62,6 +62,7 @@ def run():
                 display_text(my_text)
                 print("Ending Mention")
         else:
+            print("Nothing new, starting from cache")
             #Display either the last tweet or the default text
             display_text(my_text)
 
