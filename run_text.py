@@ -86,7 +86,7 @@ def run():
 def try_nasa(max_tweets=2):
     print("trying nasa")
 
-    screen_name = TWITTER_ACCOUNTS_TO_MONITOR[random.randint(0,len(TWITTER_ACCOUNTS_TO_MONITOR - 1))]
+    screen_name = TWITTER_ACCOUNTS_TO_MONITOR[random.randint(0, len(TWITTER_ACCOUNTS_TO_MONITOR) - 1)]
     user = api.get_user(screen_name=screen_name)
     tweets = api.user_timeline(user_id=user.id_str, count=max_tweets, include_rts=False, tweet_mode='extended', exclude_replies=True)
     for mention in reversed(tweets):
