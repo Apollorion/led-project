@@ -55,8 +55,7 @@ def run():
             req = {
                 "since_id": last_id,
                 "tweet_mode": "extended",
-                "include_entities": False,
-                "trim_user": True
+                "include_entities": False
             }
         mentions = api.mentions_timeline(**req)
 
@@ -96,10 +95,10 @@ def process_tweet(mention, check_profanity=True, seconds=60, screen_name=""):
     # Print the Tweet onto the sign
     # IDK Why but some tweets come in as "full_text" and some come in as "text" so we will just check for both
     if hasattr(mention, 'text'):
-        my_text = screen_name + mention.text.replace("\n", "  ")
+        my_text = screen_name + mention.text.replace("\n", "  ").replace("@Apollorion", "", 1).replace("@apollorion", "", 1)
         my_text = display_text(my_text, check_profanity=check_profanity, seconds=seconds)
     elif hasattr(mention, 'full_text'):
-        my_text = screen_name + mention.full_text.replace("\n", "  ")
+        my_text = screen_name + mention.full_text.replace("\n", "  ").replace("@Apollorion", "", 1).replace("@apollorion", "", 1)
         my_text = display_text(my_text, check_profanity=check_profanity, seconds=seconds)
         
     else:
