@@ -81,7 +81,7 @@ def display_text(my_text, seconds=60):
         offscreen_canvas = matrix.SwapOnVSync(offscreen_canvas)
 
 def get_last_tweet():
-    f = open("tweet_ID.txt" 'r')
+    f = open("tweet_ID.txt", 'r')
     lastId = int(f.read().strip())
     f.close()
     return lastId
