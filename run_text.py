@@ -65,13 +65,13 @@ def run():
                 # Print the Tweet onto the sign
                 # IDK Why but some tweets come in as "full_text" and some come in as "text" so we will just check for both
                 if hasattr(mention, 'text'):
-                    my_text = mention.text.replace("@Apollorion ", "", 1)
+                    my_text = mention.text.replace("@Apollorion", "", 1).replace("@apollorion", "", 1)
                     if not contains_profanity(my_text):
                         display_text(my_text)
                     else:
                         my_text = DEFAULT_TEXT
                 elif hasattr(mention, 'full_text'):
-                    my_text = mention.full_text.replace("@Apollorion ", "", 1)
+                    my_text = mention.full_text.replace("@Apollorion", "", 1).replace("@apollorion", "", 1)
                     if not contains_profanity(my_text):
                         display_text(my_text)
                     else:
