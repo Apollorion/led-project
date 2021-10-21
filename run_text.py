@@ -46,45 +46,58 @@ matrix = RGBMatrix(options = options)
 def run():
     my_text = DEFAULT_TEXT
     none_count = 0
+    unauthorized_count = 0
     while True:
 
-        print("Retreiving Mentions")
-        last_id = get_last_tweet()
-        req = {}
-        if last_id != 0:
-            req = {
-                "since_id": last_id,
-                "tweet_mode": "extended",
-                "include_entities": False
-            }
-        mentions = api.mentions_timeline(**req)
+        try:
+            print("Retreiving Mentions")
+            last_id = get_last_tweet()
+            req = {}
+            if last_id != 0:
+                req = {
+                    "since_id": last_id,
+                    "tweet_mode": "extended",
+                    "include_entities": False
+                }
+            mentions = api.mentions_timeline(**req)
 
-        if len(mentions) > 0:
-            none_count = 0
-            for mention in reversed(mentions):
-                print("Starting new mention")
-
-                # note and store last tweet
-                new_id = mention.id
-                put_last_tweet(new_id)
-
-                screen_name = ""
-                if hasattr(mention, "user") and hasattr(mention.user, "screen_name"):
-                    screen_name = mention.user.screen_name
-
-                # Print the Tweet onto the sign
-                my_text = process_tweet(mention, seconds=DISPLAY_MY_TWEETS_FOR_X_SECONDS, screen_name=f"@{screen_name}: ")
-                print("Ending Mention")
-        else:
-            #Display either the last tweet or the default text
-            print("Nothing new, starting from cache")
-            none_count += 1
-
-            if none_count < TRY_NASA_AFTER_X_CACHED_TWEETS:
-                display_text(my_text, check_profanity=False)
-            else:
+            if len(mentions) > 0:
                 none_count = 0
-                try_nasa()
+                for mention in reversed(mentions):
+                    print("Starting new mention")
+
+                    # note and store last tweet
+                    new_id = mention.id
+                    put_last_tweet(new_id)
+
+                    screen_name = ""
+                    if hasattr(mention, "user") and hasattr(mention.user, "screen_name"):
+                        screen_name = mention.user.screen_name
+
+                    # Print the Tweet onto the sign
+                    my_text = process_tweet(mention, seconds=DISPLAY_MY_TWEETS_FOR_X_SECONDS, screen_name=f"@{screen_name}: ")
+                    print("Ending Mention")
+            else:
+                #Display either the last tweet or the default text
+                print("Nothing new, starting from cache")
+                none_count += 1
+
+                if none_count < TRY_NASA_AFTER_X_CACHED_TWEETS:
+                    display_text(my_text, check_profanity=False)
+                else:
+                    none_count = 0
+                    try_nasa()
+
+            # reset to 0 if we get this far
+            unauthorized_count = 0
+        except tweepy.errors.Unauthorized:
+            if unauthorized_count < 10:
+                print("Unauthorized error. Trying again in 10 seconds.")
+                time.sleep(10)
+                unauthorized_count += 1
+            else:
+                print("too many unauthorizations, dying...")
+                exit(1)
 
 def try_nasa(max_tweets=2):
     print("trying nasa")
