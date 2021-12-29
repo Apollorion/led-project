@@ -11,11 +11,11 @@ import random
 import pathlib
 import requests
 
-DEFAULT_TEXT = "See your tweet here, @Apollorion on twitter!"
+DEFAULT_TEXT = "See your tweet here, @Apollorion on twitter! Mess with my lights at joey.apollorion.com!"
 TWEET_ID_FILE = "/home/pi/tweet_ID.txt"
 TRY_NASA_AFTER_X_CACHED_TWEETS = 2
 DISPLAY_MY_TWEETS_FOR_X_SECONDS = 600
-TWITTER_ACCOUNTS_TO_MONITOR = ["NASA", "NASAHubble", "Space_Station", "NASAhistory", "esa"]
+SKIP_PROFANITY_CHECK = ["NASA", "NASAHubble", "Space_Station", "NASAhistory", "esa", "NASAEarth", "BeamDental", "BarakObama", "StationCDRKelly", "SpaceX", "BernieSanders"]
 
 current_dir = str(pathlib.Path(__file__).parent.resolve())
 
@@ -23,6 +23,9 @@ current_dir = str(pathlib.Path(__file__).parent.resolve())
 auth = tweepy.OAuthHandler(os.environ["CONSUMER_KEY"], os.environ["CONSUMER_SECRET"])
 auth.set_access_token(os.environ["ACCESS_TOKEN"], os.environ["ACCESS_SECRET"])
 api = tweepy.API(auth)
+
+# Get who I follow
+TWITTER_ACCOUNTS_TO_MONITOR = api.get_friend_ids(screen_name="apollorion")
 
 # LED Sign options
 options = RGBMatrixOptions()
@@ -102,11 +105,12 @@ def run():
 def try_nasa(max_tweets=2):
     print("trying nasa")
 
-    screen_name = TWITTER_ACCOUNTS_TO_MONITOR[random.randint(0, len(TWITTER_ACCOUNTS_TO_MONITOR) - 1)]
-    user = api.get_user(screen_name=screen_name)
+    user_id = TWITTER_ACCOUNTS_TO_MONITOR[random.randint(0, len(TWITTER_ACCOUNTS_TO_MONITOR) - 1)]
+    user = api.get_user(user_id=user_id)
     tweets = api.user_timeline(user_id=user.id_str, count=max_tweets, include_rts=False, tweet_mode='extended', exclude_replies=True)
     for mention in reversed(tweets):
-        process_tweet(mention, check_profanity=False, screen_name=f"@{screen_name}: ")
+        profanity = False if user.screen_name in SKIP_PROFANITY_CHECK else True
+        process_tweet(mention, check_profanity=profanity, screen_name=f"@{user.screen_name}: ")
 
 def process_tweet(mention, check_profanity=True, seconds=60, screen_name=""):
     # Print the Tweet onto the sign
@@ -125,8 +129,12 @@ def process_tweet(mention, check_profanity=True, seconds=60, screen_name=""):
 
     return my_text
 
-
 def display_text(my_text, seconds=60, check_profanity=True):
+
+    if check_profanity:
+        print("Checking Profanity")
+    else:
+        print("Trusting Content")
 
     if check_profanity and contains_profanity(my_text):
         return DEFAULT_TEXT
@@ -181,6 +189,7 @@ def contains_profanity(text):
 
     response = requests.request("POST", url, headers=headers, data=payload)
     result = response.json()
+    print("bad words result", result)
     if "bad_words_total" in result and result["bad_words_total"] > 0:
         print("Text Has Bad Words")
         return True
