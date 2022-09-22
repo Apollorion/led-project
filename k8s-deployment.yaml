@@ -1,0 +1,72 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ledsign
+  namespace: ledsign
+spec:
+  selector:
+    matchLabels:
+      app: ledsign
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ledsign
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: led-sign
+      imagePullSecrets:
+        - name: ghcr-image-pull-secret
+      containers:
+        - name: ledsign
+          image: ghcr.io/apollorion/led-project:aarch64
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - mountPath: /dev/gpiomem
+              name: gpiomem
+            - mountPath: /dev/mem
+              name: mem
+            - mountPath: /tweets
+              name: tweetid
+          env:
+            - name: BAD_WORDS_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: bad-words-api-key
+                  key: credential
+            - name: ACCESS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: twitter-access-token
+                  key: credential
+            - name: ACCESS_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: twitter-acess-secret
+                  key: credential
+            - name: CONSUMER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: twitter-consumer-key
+                  key: credential
+            - name: CONSUMER_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: twitter-consumer-secret
+                  key: credential
+      volumes:
+        - name: gpiomem
+          hostPath:
+            path: /dev/gpiomem
+            type: CharDevice
+        - name: mem
+          hostPath:
+            path: /dev/mem
+            type: CharDevice
+        - name: tweetid
+          hostPath:
+            path: /root/tweets
+            type: Directory

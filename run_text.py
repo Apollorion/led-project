@@ -12,7 +12,7 @@ import pathlib
 import requests
 
 DEFAULT_TEXT = "See your tweet here, @Apollorion on twitter! Mess with my lights at joey.apollorion.com!"
-TWEET_ID_FILE = "/home/pi/tweet_ID.txt"
+TWEET_ID_FILE = "/tweets/tweet_ID.txt"
 TRY_NASA_AFTER_X_CACHED_TWEETS = 2
 DISPLAY_MY_TWEETS_FOR_X_SECONDS = 600
 SKIP_PROFANITY_CHECK = ["NASA", "NASAHubble", "Space_Station", "NASAhistory", "esa", "NASAEarth", "BeamDental", "BarakObama", "StationCDRKelly", "SpaceX", "BernieSanders"]
