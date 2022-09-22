@@ -189,6 +189,7 @@ def contains_profanity(text):
 
     try:
         response = requests.request("POST", url, headers=headers, data=payload)
+        print(response.text)
         result = response.json()
         print("bad words result", result)
         if "bad_words_total" in result and result["bad_words_total"] > 0:
