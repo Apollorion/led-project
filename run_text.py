@@ -121,7 +121,7 @@ def process_tweet(mention, check_profanity=True, seconds=60, screen_name=""):
     elif hasattr(mention, 'full_text'):
         my_text = screen_name + mention.full_text.replace("\n", "  ").replace("@Apollorion", "", 1).replace("@apollorion", "", 1)
         my_text = display_text(my_text, check_profanity=check_profanity, seconds=seconds)
-        
+
     else:
         print("Mention has no text attribute")
         print(mention)
@@ -187,18 +187,22 @@ def contains_profanity(text):
         "apikey": os.environ["BAD_WORDS_API_KEY"]
     }
 
-    response = requests.request("POST", url, headers=headers, data=payload)
-    result = response.json()
-    print("bad words result", result)
-    if "bad_words_total" in result and result["bad_words_total"] > 0:
-        print("Text Has Bad Words")
-        return True
-    elif "bad_words_total" not in result:
+    try:
+        response = requests.request("POST", url, headers=headers, data=payload)
+        result = response.json()
+        print("bad words result", result)
+        if "bad_words_total" in result and result["bad_words_total"] > 0:
+            print("Text Has Bad Words")
+            return True
+        elif "bad_words_total" not in result:
+            print("Cannot determine if text has bad words, maybe an API issue")
+            return True
+        else:
+            return False
+    except:
         print("Cannot determine if text has bad words, maybe an API issue")
         return True
-    else:
-        return False
-    
+
 
 try:
     print("Press CTRL-C to stop")
