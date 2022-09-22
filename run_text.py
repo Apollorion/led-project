@@ -199,8 +199,9 @@ def contains_profanity(text):
             return True
         else:
             return False
-    except:
+    except Exception as e:
         print("Cannot determine if text has bad words, maybe an API issue")
+        print(e)
         return True
 
 
