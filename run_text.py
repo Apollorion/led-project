@@ -42,7 +42,7 @@ def display_nhl_standings(team):
     display_text(team_intro)
     team_facts = f"{team_name} | {abbreviation} | {win_loss_ot} | {team_location} | {conference_name} Conference | {division_name} Division | {team_venue} | Since {first_year_of_play}"
     display_text(team_facts, 120)
-    team_stats = f"{team_name} | {abbreviation} | {win_loss_ot} | Pts: {points} | GP: {games_played} | GPG: {gols_per_game} | GAPG: {goals_against_per_game} | FOT: {faceoffs_taken} | FOW%: {faceoffs_win_pct}%| Save%: {save_pct}%"
+    team_stats = f"{team_name} | {abbreviation} | {win_loss_ot} | Pts: {points} | GP: {games_played} | GPG: {gols_per_game} | GAPG: {goals_against_per_game} | FOT: {faceoffs_taken} | FOW%: {faceoffs_win_pct}% | Save%: {save_pct}%"
     display_text(team_stats, 120)
 
 def display_text(my_text, seconds=60):
