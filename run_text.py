@@ -47,7 +47,7 @@ def display_nhl_standings(team):
 
 def display_text(my_text, seconds=60):
     if "LOCAL" not in os.environ:
-        from .matrix import display_text as dt
+        from matrix import display_text as dt
         dt(my_text, seconds=seconds)
     else:
         print(f"Displaying text: \"{my_text}\" for {seconds} seconds")
