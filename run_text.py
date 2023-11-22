@@ -5,53 +5,32 @@ import time
 import sys
 import requests
 import random
+from tracks import tracks
+
+announcement = "88.5 FM - Vote for the next song at christmas-on-kohler.com!"
 
 def run():
-    teams_url = "https://statsapi.web.nhl.com/api/v1/teams"
-    nhl_teams = requests.get(teams_url).json()["teams"]
+    API_ENDPOINT="http://fpp.lan/api/fppd/status"
     while True:
-        random.shuffle(nhl_teams)
-        for team in nhl_teams:
-            display_nhl_standings(team)
+        status = requests.get(API_ENDPOINT).json()
+        current_song = status["current_song"]
+        if current_song in dict.keys(tracks):
+            this = tracks[current_song]
+            display_text(f"88.5 FM - Now Playing: {this['Title']} by {this['Artist']} - ")
+            display_text(announcement, seconds=15)
+        else:
+            display_text("Not currently playing any songs.")
+            display_text(announcement)
 
 
-def display_nhl_standings(team):
-    url = f"https://statsapi.web.nhl.com/api/v1/teams/{team['id']}/stats"
-    r = requests.get(url).json()
-
-    team_name = team["name"]
-    team_venue = team["venue"]["name"]
-    team_location = team["locationName"]
-    first_year_of_play = team["firstYearOfPlay"]
-    division_name = team["division"]["name"]
-    conference_name = team["conference"]["name"]
-    abbreviation = team["abbreviation"]
-    in_the_league = r["stats"][1]["splits"][0]["stat"]["wins"]
-    main_stats = r["stats"][0]["splits"][0]["stat"]
-
-    win_loss_ot = f"{main_stats['wins']}-{main_stats['losses']}-{main_stats['ot']}"
-    points = main_stats["pts"]
-    games_played = main_stats["gamesPlayed"]
-    gols_per_game = main_stats["goalsPerGame"]
-    goals_against_per_game = main_stats["goalsAgainstPerGame"]
-    faceoffs_taken = round(main_stats["faceOffsTaken"])
-    faceoffs_win_pct = main_stats["faceOffWinPercentage"]
-    save_pct = main_stats["savePctg"]
-
-    team_intro = f"The {team_name} ({win_loss_ot}) are currently {in_the_league} in the league."
-    display_text(team_intro)
-    team_facts = f"{team_name} | {abbreviation} | {win_loss_ot} | {team_location} | {conference_name} Conference | {division_name} Division | {team_venue} | Since {first_year_of_play}"
-    display_text(team_facts, 120)
-    team_stats = f"{team_name} | {abbreviation} | {win_loss_ot} | Pts: {points} | GP: {games_played} | GPG: {gols_per_game} | GAPG: {goals_against_per_game} | FOT: {faceoffs_taken} | FOW%: {faceoffs_win_pct}% | Save%: {save_pct}%"
-    display_text(team_stats, 120)
 
 def display_text(my_text, seconds=60):
     if "LOCAL" not in os.environ:
         from matrix import display_text as dt
         dt(my_text, seconds=seconds)
     else:
-        print(f"Displaying text: \"{my_text}\" for {seconds} seconds")
-        time.sleep(5)
+        print(my_text)
+        time.sleep(seconds)
 
 try:
     print("Press CTRL-C to stop")
