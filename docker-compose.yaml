@@ -1,0 +1,21 @@
+services:
+  sign:
+    image: ghcr.io/apollorion/led-project:aarch64
+    volumes:
+      - gpiomem:/dev/gpiomem
+      - mem:/dev/mem
+    restart: always
+    privileged: true
+volumes:
+  gpiomem:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/dev/gpiomem'
+  mem:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/dev/mem'
