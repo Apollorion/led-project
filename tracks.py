@@ -112,7 +112,7 @@ tracks = {
     "Artist": "Trans-Siberian Orchestra"
   },
   "Pentatonix- Hallelujah.mp3": {
-    "Title": "Hallelujah || CeeNaija.com",
+    "Title": "Hallelujah",
     "Artist": "Pentatonix"
   },
   "02 - Merry F__king Christmas [Explicit].mp3": {
@@ -253,7 +253,7 @@ tracks = {
   },
   "09 - Santa Baby.mp3": {
     "Title": "Santa Baby",
-    "Artist": "Eartha Kitt"
+    "Artist": "Earth/usr/local/bin/gpg a Kitt"
   },
   "07 - Snow Waltz.mp3": {
     "Title": "Snow Waltz",

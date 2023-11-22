@@ -16,11 +16,10 @@ def run():
         current_song = status["current_song"]
         if current_song in dict.keys(tracks):
             this = tracks[current_song]
-            display_text(f"88.5 FM - Now Playing: {this['Title']} by {this['Artist']} - ")
+            display_text(f"88.5 FM - Now Playing: {this['Title']} by {this['Artist']}", seconds=10)
             display_text(announcement, seconds=15)
         else:
-            display_text("Not currently playing any songs.")
-            display_text(announcement)
+            display_text(announcement, seconds=10)
 
 
 
