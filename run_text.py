@@ -5,31 +5,46 @@ import time
 import sys
 import requests
 import random
-from tracks import tracks
-
-announcement = "88.5 FM - Vote for the next song at christmas-on-kohler.com!"
+import json
+from datetime import date, timedelta
 
 def run():
-    API_ENDPOINT="http://fpp.lan/api/fppd/status"
-    while True:
-        try:
-            status = requests.get(API_ENDPOINT).json()
-            current_song = status["current_song"]
-            if current_song in dict.keys(tracks):
-                this = tracks[current_song]
-                display_text(f"88.5 FM - Now Playing: {this['Title']} by {this['Artist']}", seconds=10)
-                display_text(announcement, seconds=15)
-            else:
-                display_text(announcement, seconds=10)
-        except:
-            display_text(announcement, seconds=10)
 
+    while True:
+        ice = get_sea_ice_cover()
+        snow = get_snow_cover()
+
+        display_text(ice, seconds=10)
+        display_text(snow, seconds=10)
+
+
+def get_sea_ice_cover():
+    last_month = date.today().replace(day=1) - timedelta(days=1)
+    m = last_month.strftime("%m")
+    y = last_month.strftime("%Y")
+
+    r = requests.get(f"https://www.ncei.noaa.gov/access/monitoring/snow-and-ice-extent/sea-ice/G/{m}/data.json")
+    j = r.json()
+    data = j["data"][y]
+
+    return f"Sea Ice Coverage: {data['value']}; Anomoly: {data['anom']}"
+
+def get_snow_cover():
+    last_month = date.today().replace(day=1) - timedelta(days=1)
+    m = last_month.strftime("%m")
+    y = last_month.strftime("%Y")
+
+    r = requests.get(f"https://www.ncei.noaa.gov/access/monitoring/snow-and-ice-extent/snow-cover/namgnld/{m}/data.json")
+    j = r.json()
+    data = j["data"][y]
+
+    return f"Snow Coverage: {data['value']}; Anomoly: {data['anom']}"
 
 
 def display_text(my_text, seconds=60):
     if "LOCAL" not in os.environ:
         from matrix import display_text as dt
-        dt(my_text, seconds=seconds)
+        dt(my_text, timeout=seconds)
     else:
         print(my_text)
         time.sleep(seconds)
