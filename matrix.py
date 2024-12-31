@@ -5,7 +5,6 @@ from rgbmatrix import RGBMatrix, RGBMatrixOptions
 from rgbmatrix import graphics
 import random
 import pathlib
-import textwrap
 
 current_dir = str(pathlib.Path(__file__).parent.resolve())
 
@@ -28,18 +27,16 @@ options.drop_privileges=False
 
 matrix = RGBMatrix(options = options)
 
-def display_text(my_text, timeout=30):
+def display_text(my_text_arr, timeout=30):
     offscreen_canvas = matrix.CreateFrameCanvas()
     font = graphics.Font()
     font.LoadFont(current_dir + "/fonts/7x13B.bdf")
     textColor = graphics.Color(random.randint(0,255), random.randint(0,255), random.randint(0,255))
 
-    lines = textwrap.wrap(my_text, 13, break_long_words=True)
-
-    for line in lines:
+    for line in my_text_arr:
         offscreen_canvas.Clear()
 
-        graphics.DrawText(offscreen_canvas, font, 0, 12, textColor, '{:^14}'.format(line))
+        graphics.DrawText(offscreen_canvas, font, 0, 12, textColor, line)
         offscreen_canvas = matrix.SwapOnVSync(offscreen_canvas)
 
         time.sleep(timeout)

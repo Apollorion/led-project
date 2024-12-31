@@ -26,8 +26,12 @@ def get_sea_ice_cover():
     r = requests.get(f"https://www.ncei.noaa.gov/access/monitoring/snow-and-ice-extent/sea-ice/G/{m}/data.json")
     j = r.json()
     data = j["data"][y]
-
-    return f"Sea Ice Coverage: {data['value']}; Anomoly: {data['anom']}"
+    return [
+    #   "XXXXXXXXXXXXX"
+        " Sea Ice Cov ", 
+        f" Typ {data['value']} ", 
+        f" Anom {data['anom']} "
+    ]
 
 def get_snow_cover():
     last_month = date.today().replace(day=1) - timedelta(days=1)
@@ -38,16 +42,21 @@ def get_snow_cover():
     j = r.json()
     data = j["data"][y]
 
-    return f"Snow Coverage: {data['value']}; Anomoly: {data['anom']}"
+    return [
+    #   "XXXXXXXXXXXXX"
+        "   Snow Cov  ", 
+        f" Typ {data['value']} ", 
+        f" Anom {data['anom']} "
+    ]
 
 
-def display_text(my_text, seconds=60):
+def display_text(my_text_arr, seconds=60):
     if "LOCAL" not in os.environ:
         from matrix import display_text as dt
-        dt(my_text, timeout=seconds)
+        dt(my_text_arr, timeout=seconds)
     else:
-        print(my_text)
-        time.sleep(seconds)
+        for i in my_text_arr:
+            print(i)
 
 try:
     print("Press CTRL-C to stop")
