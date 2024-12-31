@@ -36,12 +36,12 @@ def display_text(my_text_arr, timeout=30):
     for line in my_text_arr:
         offscreen_canvas.Clear()
 
-        graphics.DrawText(offscreen_canvas, font, 0, 12, textColor, line)
+        graphics.DrawText(offscreen_canvas, font, 0, 12, textColor, '{:^12}'.format(line))
         offscreen_canvas = matrix.SwapOnVSync(offscreen_canvas)
 
         time.sleep(timeout)
 
-    return my_text
+    return my_text_arr
 
 def scroll_text(my_text, seconds=60):
 

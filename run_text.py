@@ -28,9 +28,9 @@ def get_sea_ice_cover():
     data = j["data"][y]
     return [
     #   "XXXXXXXXXXXXX"
-        " Sea Ice Cov ", 
-        f" Typ {data['value']} ", 
-        f" Anom {data['anom']} "
+        "Sea Ice Cov", 
+        f"Typical {data['value']}", 
+        f"Anom {data['anom']}"
     ]
 
 def get_snow_cover():
@@ -44,9 +44,9 @@ def get_snow_cover():
 
     return [
     #   "XXXXXXXXXXXXX"
-        "   Snow Cov  ", 
-        f" Typ {data['value']} ", 
-        f" Anom {data['anom']} "
+        "Snow Cov", 
+        f"Typical {data['value']}", 
+        f"Anom {data['anom']}"
     ]
 
 
